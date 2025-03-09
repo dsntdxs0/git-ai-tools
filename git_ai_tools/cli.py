@@ -19,17 +19,9 @@ def commit():
             click.echo(suggestion)
             exit(1)
             
-        # Create a temporary file with the suggested message
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
-            f.write(suggestion)
-            temp_path = f.name
-        
-        try:
-            # Use git commit with -e flag and the template file
-            git_ai.repo.git.commit("-e", "-t", temp_path)
-        finally:
-            # Clean up the temporary file
-            os.unlink(temp_path)
+        # Use git commit with the message directly
+        git_ai.repo.git.commit("-m", suggestion)
+        click.echo(f"Committed with message: {suggestion}")
             
     except Exception as e:
         click.echo(f"Error: {str(e)}", err=True)

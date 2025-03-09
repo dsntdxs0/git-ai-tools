@@ -9,7 +9,9 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 setup(
     name="git-ai-tools",
     version="0.1.0",
-    author="Mik https://mik.sh",
+    author="Mik",
+    author_email="workwithme@mik.sh",
+    url="https://github.com/mik1337/git-ai-tools",
     description="A collection of AI-powered Git tools",
     long_description=long_description,
     long_description_content_type="text/markdown",
