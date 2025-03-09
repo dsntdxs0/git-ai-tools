@@ -1,6 +1,6 @@
 import click
-import tempfile
 import os
+import tempfile
 from .core import GitCommitAI
 
 @click.group()
@@ -12,6 +12,7 @@ def cli():
 def commit():
     """Create a commit using AI-generated message from staged changes."""
     try:
+        click.echo("🤔 Analyzing changes and generating commit message...")
         git_ai = GitCommitAI()
         suggestion = git_ai.suggest_commit(use_staged=True, use_last_commit=False)
         
@@ -19,19 +20,17 @@ def commit():
             click.echo(suggestion)
             exit(1)
             
-        # Create a temporary file with the suggested message
+        click.echo("✨ Opening editor with the suggested message...")
+        # Create a temporary file for the message
         with tempfile.NamedTemporaryFile(mode='w', suffix='.git-commit', delete=False) as f:
-            f.write(suggestion)
             # Add helpful comment about editing
-            f.write('\n\n# AI-generated commit message. Edit if needed, then save and close to commit.\n')
-            f.write('# Lines starting with # will be ignored.\n')
+            f.write('# AI-generated commit message. Edit if needed, then save and close to commit.\n')
+            f.write('# Lines starting with # will be ignored.\n\n')
+            f.write(suggestion)
+            temp_path = f.name
         
-        try:
-            # Use git commit with the prepared message file
-            git_ai.repo.git.commit("-t", temp_path)
-        finally:
-            # Clean up the temporary file
-            os.unlink(temp_path)
+        # Hand off to git commit with our message as template
+        os.execvp('git', ['git', 'commit', '--template', temp_path])
             
     except Exception as e:
         click.echo(f"Error: {str(e)}", err=True)
