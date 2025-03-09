@@ -1,6 +1,5 @@
 import click
 import os
-import tempfile
 from .core import GitCommitAI
 
 @click.group()
