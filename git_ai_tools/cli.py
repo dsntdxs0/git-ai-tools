@@ -4,7 +4,7 @@ from .core import GitCommitAI
 
 @click.group()
 def cli():
-    """Git AI plugin for intelligent commit messages."""
+    """Git AI Tools, a collection of AI-augmented Git tools."""
     pass
 
 @cli.command()

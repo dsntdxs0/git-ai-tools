@@ -92,6 +92,35 @@ git ai suggest --longer           # Get a more detailed message
 git ai suggest "context here"     # Add custom context
 ```
 
+#### Understanding the --last flag
+
+The `--last` flag is used to generate a commit message based on your last commit's changes instead of the current changes in your working directory. This is particularly useful when:
+
+- You want to improve/rewrite the message of your last commit
+- You made a quick commit with a poor message and want a better suggestion
+- You plan to amend your last commit and want a better message
+
+Without `--last` (default behavior):
+
+- The tool looks at your current changes (either staged or unstaged)
+- Generates a commit message based on what you've modified
+
+With `--last`:
+
+- The tool looks at your most recent commit (HEAD)
+- Shows what changes were made in that commit
+- Generates a new commit message for those changes
+
+Example workflow for improving your last commit:
+
+```bash
+# Get a suggestion for your last commit's changes
+git ai suggest --last
+
+# If you like the suggestion, amend your commit with the new message
+git commit --amend -m "new message"
+```
+
 ### Common Workflows
 
 1. Normal commit workflow:
