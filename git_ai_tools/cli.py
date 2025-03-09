@@ -22,7 +22,9 @@ def commit():
         # Create a temporary file with the suggested message
         with tempfile.NamedTemporaryFile(mode='w', suffix='.git-commit', delete=False) as f:
             f.write(suggestion)
-            temp_path = f.name
+            # Add helpful comment about editing
+            f.write('\n\n# AI-generated commit message. Edit if needed, then save and close to commit.\n')
+            f.write('# Lines starting with # will be ignored.\n')
         
         try:
             # Use git commit with the prepared message file
