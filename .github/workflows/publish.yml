@@ -7,6 +7,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -22,6 +24,28 @@ jobs:
 
       - name: Build package
         run: python -m build
+
+      - name: Upload Release Assets
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs').promises;
+            const { repo: { owner, repo }, sha } = context;
+
+            // Get all files in dist directory
+            const files = await fs.readdir('./dist');
+
+            // Upload each file
+            for (const file of files) {
+              const content = await fs.readFile(`./dist/${file}`);
+              await github.rest.repos.uploadReleaseAsset({
+                owner,
+                repo,
+                release_id: context.payload.release.id,
+                name: file,
+                data: content
+              });
+            }
 
       - name: Publish to PyPI
         env:
