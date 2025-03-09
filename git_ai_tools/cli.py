@@ -21,16 +21,9 @@ def commit():
             exit(1)
             
         click.echo("✨ Opening editor with the suggested message...")
-        # Create a temporary file for the message
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.git-commit', delete=False) as f:
-            # Add helpful comment about editing
-            f.write('# AI-generated commit message. Edit if needed, then save and close to commit.\n')
-            f.write('# Lines starting with # will be ignored.\n\n')
-            f.write(suggestion)
-            temp_path = f.name
         
-        # Hand off to git commit with our message as template
-        os.execvp('git', ['git', 'commit', '--template', temp_path])
+        # Hand off to git commit with message and editor option
+        os.execvp('git', ['git', 'commit', '-e', '-m', suggestion])
             
     except Exception as e:
         click.echo(f"Error: {str(e)}", err=True)
