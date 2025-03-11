@@ -8,12 +8,23 @@ def cli():
     pass
 
 @cli.command()
-def commit():
+@click.option('--shorter', is_flag=True, help='Generate a shorter message')
+@click.option('--longer', is_flag=True, help='Generate a more detailed message')
+@click.argument('context', required=False)
+def commit(shorter, longer, context):
     """Create a commit using AI-generated message from staged changes."""
     try:
         click.echo("🤔 Analyzing changes and generating commit message...")
         git_ai = GitCommitAI()
-        suggestion = git_ai.suggest_commit(use_staged=True, use_last_commit=False)
+        suggestion = git_ai.suggest_commit(
+                use_staged=True,
+                use_last_commit=False,
+                style_hints={
+                    'shorter': shorter,
+                    'longer': longer,
+                    'context': context
+                }
+            )
         
         if suggestion.startswith("No"):  # Error message
             click.echo(suggestion)
