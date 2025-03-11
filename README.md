@@ -72,6 +72,11 @@ git config --global git-ai.deepseek-key "your-deepseek-api-key"
 ```bash
 git add .              # Stage your changes
 git ai commit          # Creates a commit with AI-generated message
+
+# Customize the message
+git ai commit --shorter          # Get a shorter message
+git ai commit --longer           # Get a more detailed message
+git ai commit "context here"     # Add custom context
 ```
 
 2. Get commit message suggestions:
