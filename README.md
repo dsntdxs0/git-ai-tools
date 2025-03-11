@@ -20,6 +20,8 @@ Install directly from PyPI:
 pip install git-ai-tools
 ```
 
+https://github.com/user-attachments/assets/2c07b2d2-415c-4f19-9ad7-7859727b7170
+
 Or install from source:
 
 ```bash
@@ -37,6 +39,8 @@ You can choose between OpenAI (default), Gemini, or DeepSeek:
 ```bash
 git config --global git-ai.ai-model openai  # or 'gemini' or 'deepseek'
 ```
+
+
 
 ### 2. Configure API Key
 
@@ -78,6 +82,9 @@ git ai commit --shorter          # Get a shorter message
 git ai commit --longer           # Get a more detailed message
 git ai commit "context here"     # Add custom context
 ```
+
+https://github.com/user-attachments/assets/57ef8602-949b-46b4-ac03-6ea97b9583c7
+
 
 2. Get commit message suggestions:
 
