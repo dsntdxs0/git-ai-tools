@@ -12,11 +12,11 @@ class GitCommitAI:
     }
 
     SYSTEM_PROMPT = (
-        "You are a Git commit message generator that strictly follows "
-        "Conventional Commits format. You analyze relavent comments from the user, and git diffs and create "
+        "You are a Git commit message generator that follows "
+        "Conventional Commits format. You analyze relevant comments from the user and git diffs to create "
         "precise, meaningful commit messages. Always be concise and "
-        "focus on the main changes. Never include explanations or "
-        "additional text beyond the commit message itself."
+        "focus on the main changes. If the user provides additional context or requests a longer description, "
+        "incorporate that into the commit message. Respond ONLY with the commit message unless the user explicitly asks for additional information."
     )
 
     def __init__(self):
@@ -155,18 +155,21 @@ class GitCommitAI:
             "   - Clear and concise\n\n"
             "Consider the intent behind the changes and the overall impact of the modifications, in addition to the git diff provided.\n"
         )
-        
+
+        prompt += f"\nHere's the git diff to describe:\n\n{diff}\n\n"
+
         # Add style hints if provided
         if style_hints:
             if style_hints.get('shorter'):
-                prompt += "Make the message very concise and brief.\n"
+                prompt += "Make the message very concise and brief. Respond ONLY with the commit message, nothing else.\n"
             elif style_hints.get('longer'):
-                prompt += "Provide a more detailed description while still following the format.\n"
+                prompt += "Provide a more detailed description while still following the format. Respond ONLY with the commit message, nothing else.\n"
             
             if style_hints.get('context'):
-                prompt += f"Additional context: {style_hints['context']}\n"
+                prompt += f"Consider the following additional context: {style_hints['context']}\n"
 
-        prompt += f"\nHere's the git diff to describe:\n\n{diff}\n\nRespond ONLY with the commit message, nothing else."
+        # print(prompt)
+        # print(style_hints)
 
         try:
             response = self._call_api(prompt)
