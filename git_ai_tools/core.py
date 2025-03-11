@@ -8,8 +8,16 @@ class GitCommitAI:
     API_ENDPOINTS = {
         'openai': 'https://api.openai.com/v1/chat/completions',
         'gemini': 'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent',
-        'deepseek': 'https://api.deepseek.com/v1/chat/completions'
+        'deepseek': 'https://api.deepseek.com/chat/completions'
     }
+
+    SYSTEM_PROMPT = (
+        "You are a Git commit message generator that strictly follows "
+        "Conventional Commits format. You analyze relavent comments from the user, and git diffs and create "
+        "precise, meaningful commit messages. Always be concise and "
+        "focus on the main changes. Never include explanations or "
+        "additional text beyond the commit message itself."
+    )
 
     def __init__(self):
         self.repo = Repo(os.getcwd())
@@ -82,13 +90,7 @@ class GitCommitAI:
                 'messages': [
                     {
                         'role': 'system',
-                        'content': (
-                            "You are a Git commit message generator that strictly follows "
-                            "Conventional Commits format. You analyze git diffs and create "
-                            "precise, meaningful commit messages. Always be concise and "
-                            "focus on the main changes. Never include explanations or "
-                            "additional text beyond the commit message itself."
-                        )
+                        'content': self.SYSTEM_PROMPT
                     },
                     {'role': 'user', 'content': prompt}
                 ],
@@ -105,10 +107,17 @@ class GitCommitAI:
         elif self.model == 'deepseek':
             headers['Authorization'] = f'Bearer {self.api_key}'
             data = {
-                'model': 'deepseek-coder',
-                'messages': [{'role': 'user', 'content': prompt}],
+                'model': 'deepseek-chat',
+                'messages': [
+                    {
+                        'role': 'system',
+                        'content': self.SYSTEM_PROMPT
+                    },
+                    {'role': 'user', 'content': prompt}
+                ],
+                'temperature': 1.0,
                 'max_tokens': 100,
-                'temperature': 0.7
+                'stream': False
             }
 
         response = requests.post(
@@ -135,7 +144,7 @@ class GitCommitAI:
 
         # Base prompt
         prompt = (
-            "Generate a Git commit message following the Conventional Commits specification:\n"
+            "Generate a Git commit message based on relevant comments from the user, and following the Conventional Commits specification:\n"
             "1. Format: <type>(<scope>): <description>\n"
             "2. Types: feat, fix, docs, style, refactor, test, chore\n"
             "3. Scope is optional but encouraged\n"
@@ -144,8 +153,9 @@ class GitCommitAI:
             "   - No period at end\n"
             "   - Maximum 72 characters\n"
             "   - Clear and concise\n\n"
+            "Consider the intent behind the changes and the overall impact of the modifications, in addition to the git diff provided.\n"
         )
-
+        
         # Add style hints if provided
         if style_hints:
             if style_hints.get('shorter'):
