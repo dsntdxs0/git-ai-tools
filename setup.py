@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="git-ai-tools",
-    version="0.1.0",
+    version="0.1.1",
     author="Mik",
     author_email="workwithme@mik.sh",
     url="https://github.com/mik1337/git-ai-tools",
